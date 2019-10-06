@@ -23,8 +23,8 @@ describe('cart routes', () => {
     //but this does not work
     //https://www.npmjs.com/package/supertest-session
     testSession.post('/api/carts').send(products[0])
-    testSession.post('/api/carts').send(products[1])
-    testSession.post('/api/carts').send(products[2])
+    // testSession.post('/api/carts').send(products[1])
+    // testSession.post('/api/carts').send(products[2])
     testSession
       .post('/api/carts')
       .send(product)

@@ -4,16 +4,17 @@ const {Product, Size} = require('../db/models')
 // GET api/products/
 router.get('/', async (req, res, next) => {
   try {
-    const products = await Product.findAll()
+    const products = await Product.findAll() // => SELECT * FROM products;
     res.json(products)
   } catch (err) {
     next(err)
   }
 })
 
-// GET api/products/
+// GET api/products/findAll
 router.get('/findAll', async (req, res, next) => {
   try {
+    // * Eager load the sizes
     const allIncluded = await Product.findAll({
       include: [Size]
     })
@@ -61,7 +62,7 @@ router.get('/quantity/:id', async (req, res, next) => {
 // GET api/products/
 router.get('/:productId', async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.productId)
+    const product = await Product.findByPk(req.params.productId)
     if (product) {
       res.json(product)
     } else {

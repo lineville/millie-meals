@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:userId', async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.userId)
+    const user = await User.findByPk(req.params.userId)
     if (user) {
       res.json(user)
     } else {
@@ -32,14 +32,14 @@ router.put('/edit/password', async (req, res, next) => {
   try {
     const user = await User.findByEmail(req.body.email)
     if (user) {
-      if ( user.correctPassword(req.body.oldPassword) ){
+      if (user.correctPassword(req.body.oldPassword)) {
         await user.update({
           //a hook exists to handle encrypting this
-          password: req.body.newPassword,
+          password: req.body.newPassword
         })
-        res.json(true);
+        res.json(true)
       } else {
-        res.status(401).json(false);
+        res.status(401).json(false)
       }
     } else {
       res.status(404)

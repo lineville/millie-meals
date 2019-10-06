@@ -41,7 +41,7 @@ describe('/api/order', () => {
       .send(body)
       .expect(201)
 
-    const orderDb = await Order.findById(1)
+    const orderDb = await Order.findByPk(1)
     // expect(orderDb.customer).to.equal(body.name)
     // console.log(`testing:`, orderDb.quanitty, body.quantity)
     expect(orderDb.quantity).to.equal(body.cart[0].quantity)

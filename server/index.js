@@ -33,7 +33,7 @@ passport.serializeUser((user, done) => done(null, user.id))
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await db.models.user.findById(id)
+    const user = await db.models.user.findByPk(id)
     done(null, user)
   } catch (err) {
     done(err)
@@ -54,6 +54,7 @@ const createApp = () => {
   // session middleware with passport
   app.use(
     session({
+      // !! TODO need to add real ENV vars in secrets.js
       secret: process.env.SESSION_SECRET || 'my best friend is Cody',
       store: sessionStore,
       resave: false,
@@ -97,7 +98,7 @@ const createApp = () => {
 const startListening = () => {
   // start listening (and create a 'server' object representing our server)
   const server = app.listen(PORT, () =>
-    console.log(`Mixing it up on port ${PORT}`)
+    console.log(`Hosted at: http://localhost:${PORT}`)
   )
 
   // set up our socket control center

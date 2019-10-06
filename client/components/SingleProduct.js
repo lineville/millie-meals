@@ -25,7 +25,7 @@ class SingleProduct extends Component {
   }
 
   async handleSizeChange(event) {
-    if (event.target.name == 'size') {
+    if (event.target.name === 'size') {
       await this.props.selectSize(event.target.value)
     }
     for (let i = 0; i < this.props.inventory.inventory.length; i++) {

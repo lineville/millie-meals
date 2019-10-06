@@ -1,12 +1,10 @@
 import axios from 'axios'
 
-const products = []
-
 // ACTION TYPES
 const RECEIVE_PRODUCTS = 'RECEIVE_PRODUCTS'
 
 // ACTION CREATORS
-function actionCreatorForProducts(content) {
+function receiveProducts(content) {
   return {
     type: RECEIVE_PRODUCTS,
     payload: content
@@ -17,7 +15,7 @@ export const getAllProducts = () => {
   return async dispatch => {
     try {
       const {data} = await axios.get('/api/products')
-      const action = actionCreatorForProducts(data)
+      const action = receiveProducts(data)
       dispatch(action)
     } catch (error) {
       console.log('Could not fetch all products', error)
@@ -25,7 +23,7 @@ export const getAllProducts = () => {
   }
 }
 
-const reducer = function(state = products, action) {
+const reducer = function(state = [], action) {
   switch (action.type) {
     case RECEIVE_PRODUCTS:
       return action.payload
