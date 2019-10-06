@@ -1,0 +1,116 @@
+import React, {Component} from 'react'
+import axios from 'axios'
+import {FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap'
+
+class ChangePassword extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleChange = this.handleChange.bind(this)
+
+    this.state = {
+      oldPassword: '',
+      newPassword1: '',
+      newPassword2: '',
+      // eslint-disable-next-line react/no-unused-state
+      error: ''
+    }
+  }
+
+  validatePassword(password) {
+    return password.length > 5
+  }
+
+  getValidationState() {
+    return 'success'
+  }
+
+  handleChange(event) {
+    console.log(event.target.name)
+    this.setState(oldState => ({
+      ...oldState.state,
+      [event.target.name]: event.target.value
+    }))
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault()
+    const {oldPassword, newPassword1, newPassword2} = this.state
+    const {email} = this.props
+    if (newPassword1 === newPassword2 && this.validatePassword(newPassword1)) {
+      const postBody = {
+        email,
+        oldPassword,
+        newPassword: newPassword1
+      }
+      await axios.put('/api/users/edit/password', postBody)
+    } else {
+      this.setState(oldState => ({...oldState.state, error: 'mismatching'}))
+    }
+  }
+
+  render() {
+    const {oldPassword, newPassword1, newPassword2} = this.state
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <FormGroup
+          controlId="formBasicText"
+          validationState={this.getValidationState()}
+        >
+          <ControlLabel>Retype your current password</ControlLabel>
+          <div className="md-form">
+            <FormControl
+              type="password"
+              name="oldPassword"
+              className="form-control"
+              placeholder="Current password"
+              onChange={this.handleChange}
+              value={oldPassword}
+            />
+            <label htmlFor="password" />
+          </div>
+          <FormControl.Feedback />
+          <br />
+          <div className="md-form">
+            <FormControl
+              type="password"
+              id="newPassword1"
+              name="newPassword1"
+              className="form-control"
+              placeholder="New password"
+              onChange={this.handleChange}
+              value={newPassword1}
+            />
+          </div>
+          <div className="md-form">
+            <FormControl
+              type="password"
+              id="newPassword2"
+              name="newPassword2"
+              className="form-control"
+              placeholder="Confirm new password"
+              onChange={this.handleChange}
+              value={newPassword2}
+            />
+          </div>
+          <Button type="submit" bsStyle="outline-info waves-effect">
+            Save
+          </Button>
+        </FormGroup>
+      </form>
+    )
+  }
+}
+
+// const mapState = state => {
+//   return {user: state.user}
+// }
+
+// const mapDispatch = dispatch => {
+//   return {loadUser: () => dispatch(me())}
+// }
+
+// const connectedChangePassword = connect(mapState, mapDispatch)(ChangePassword)
+// export default connectedChangePassword
+
+export default ChangePassword

@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+  - node # uses most recent stable node version
+services:
+  - postgresql # starts up postgres
+addons:
+  postgresql: '9.6' # highest available postgres version on Travis
+dist: trusty # uses trusty environment
+sudo: false # when on trusty, uses Docker containers for speed
+notifications:
+  email:
+    on_success: change # default: change (only when going from broken to fixed)
+    on_failure: always # default: always (which is annoying, as it should be)
+install:
+  - npm ci # faster, goes only from package-lock
+before_script:
+  - psql -c 'create database "milliemeals";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
+
+before_deploy:
+  - npm run build-client # make the bundle
+  - rm -rf node_modules # omit from the tarball, since we skip cleanup
+deploy:
+  skip_cleanup: true # prevents travis from deleting the build
+  provider: heroku
+  app: milliemeals # see README
+  api_key:
+    secure: "M2oTJ0J+26YhOQVetOVUTYz4erxLC9lB0CuU7cMlZrVKPb6kRqrQop6hfw/VA+QnMdkjdES0ZSbCWsHaiydKn5CoyMLdZOdT3Dzr8a6HUOOVKO6Cw5Whw44Xrk832SJlbT2WZ7JC9hcRBORieXG5dSvoikgqpLgRcYHpBcwQAdcGeUsvUYtUZvZ7/jY+9yKdkR8DTOJknXDxRTwF8uelM57rkzFRXUmqIuj8f2RZSd+oUGkgr4fm8D+HMHPY+5JOmxCptWhHisw/HX+PblTDboNjXQIXSQKp9geYUcsCghINDaoTvYi0LXTeaaTj56FE50mvUl0cemnaE49Mz8Eb59febXr6pXatRsCFBt9ru/u/dh3bGj8zWOwSrFAU7tn5UqpFxiWSV82QXIPiJhzwSPbe9Eslf+YRGL3e4OHD09iEs/gyOi75BFqOTwvQ929WuO5ScAO0M9yE9jEY8U1ltXNyROO/lEKHX67PblSdTI8oDQQXqN4dd9ba5V9NJYhuzUHCaVi1o0ClwBLkpPlSz0MBB50DrkqMtGjxgcBxECE14xMC5iLo+adOlsthNE5CXxqYiDmeGAzIlkP9axKLXAGCA4TxVd5url3zjgz8XdfE94vBx6XwH2XM5bIF0zDF6LVNNl10MuEa0pAwe6rUKhnYwx5bzCkqYF6vGvl1UrE=" # see README
